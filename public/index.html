@@ -1,0 +1,44 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chatbot</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    #response { margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Chat with AI</h1>
+  <form id="chat-form">
+    <input type="text" id="message" placeholder="Type a message..." required style="width: 100%; padding: 10px;" />
+    <button type="submit">Send</button>
+  </form>
+  <div id="response"></div>
+
+  <script>
+    const form = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message');
+    const responseDiv = document.getElementById('response');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = messageInput.value.trim();
+      if (!message) return;
+
+      responseDiv.innerHTML = '⏳ Thinking...';
+
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+
+      const data = await res.json();
+      responseDiv.innerHTML = data.htmlResponse || '❌ No response';
+      messageInput.value = '';
+    });
+  </script>
+</body>
+</html>
